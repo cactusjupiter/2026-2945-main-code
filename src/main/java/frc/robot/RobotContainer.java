@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 
 // import frc.robot.LimelightHelpers;
 
@@ -39,6 +41,8 @@ public class RobotContainer {
     private final CommandXboxController manipulatorController = new CommandXboxController(1);
 
     private final Intake intakeSubsystem = new Intake();
+    private final Climber climbSubsystem = new Climber();
+    private final Shooter shooterSubsystem = new Shooter();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -85,6 +89,17 @@ public class RobotContainer {
 
         manipulatorController.leftTrigger().whileTrue(intakeSubsystem.intakeInCommand());
         manipulatorController.leftBumper().whileTrue(intakeSubsystem.intakeOutCommand());
+
+        manipulatorController.rightTrigger().whileTrue(shooterSubsystem.shooterShootCommand()); // TODO: replace this once shooter is fleshed out
+        manipulatorController.rightBumper().whileTrue(shooterSubsystem.shooterReverseCommand());
+
+        if(manipulatorController.getLeftY() > 0.5){
+            climbSubsystem.climbUpCommand(); // TODO: replace this once climber is fleshed out
+        }else if(manipulatorController.getLeftY() < -0.5){
+            climbSubsystem.climbDownCommand(); // can we just do this? idk // i dont think we can since thats not how commands work i think ? // REVIEW
+        }
+
+        manipulatorController.leftStick().multiPress(2, 2).onTrue(climbSubsystem.pivotUpCommand()); // TODO: implement proper logic for pivot up vs pivot down command
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
