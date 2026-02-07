@@ -7,14 +7,22 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
 
     // Variable definition
     private TalonFX shootMotor = new TalonFX(Constants.SHOOT_MOTOR_ID);
+    private TalonFX hoodMotor = new TalonFX(Constants.HOOD_MOTOR_ID);
     private static final double FIRE_SPEED = 0.8;
+    private static final double HOOD_SPEED = 0.8;
+
+    private DigitalInput hoodOpenSwitch = new DigitalInput(Constants.HOOD_LIMIT_OPEN);
+    private DigitalInput hoodClosedSwitch = new DigitalInput(Constants.HOOD_LIMIT_CLOSED);
+    private boolean isHoodOpen = false;
 
   public Shooter() {
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
@@ -23,6 +31,17 @@ public class Shooter extends SubsystemBase {
     shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     // TODO: Figure out if coast or break
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
+
+    // TODO: figure out if this is counterclock of clock
+    // open is positive
+    hoodConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    
+    hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    //initialize hood to closed
+    CommandScheduler.getInstance().schedule(hoodCloseCommand());
   }
 
   public Command shooterReverseCommand() {
@@ -47,6 +66,39 @@ public class Shooter extends SubsystemBase {
         });
   }
 
+  public Command hoodCommand() {
+    // close because is currently open
+    if (isHoodOpen) {
+      return hoodCloseCommand();
+    } else { //open because is currently closed
+      return hoodOpenCommand();
+    }
+  }
+
+  private Command hoodCloseCommand() {
+    return run(
+      () -> {
+          setHoodPower(-HOOD_SPEED);
+      }).until(
+        hoodClosedSwitch::get
+      ).finallyDo(
+      () -> {
+          stopHood();
+      });
+  }
+
+  private Command hoodOpenCommand() {
+    return run(
+      () -> {
+          setHoodPower(HOOD_SPEED);
+      }).until(
+        hoodOpenSwitch::get
+      ).finallyDo(
+      () -> {
+          stopHood();
+      });
+  }
+
   private void setShooterPower(double power) {
     shootMotor.set(power);
   }
@@ -55,23 +107,11 @@ public class Shooter extends SubsystemBase {
     setShooterPower(0.0);
   } 
 
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  private void setHoodPower(double power) {
+    hoodMotor.set(power);
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
+  private void stopHood() {
+    setHoodPower(0.0);
+  } 
 }
