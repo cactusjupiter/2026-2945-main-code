@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +18,8 @@ public class Shooter extends SubsystemBase {
     // Variable definition
     private TalonFX shootMotor = new TalonFX(Constants.SHOOT_MOTOR_ID);
     private TalonFX hoodMotor = new TalonFX(Constants.HOOD_MOTOR_ID);
-    private static final double FIRE_SPEED = 0.8;
+    private static final double FIRE_SPEED = 50;
+    private static final VelocityVoltage fireVelocityController = new VelocityVoltage(0).withSlot(0); // velocity based control
     private static final double HOOD_SPEED = 0.8;
 
     private DigitalInput hoodOpenSwitch = new DigitalInput(Constants.HOOD_LIMIT_OPEN);
@@ -37,11 +39,19 @@ public class Shooter extends SubsystemBase {
     // TODO: figure out if this is counterclock of clock
     // open is positive
     hoodConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    
+
     hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     //initialize hood to closed
     CommandScheduler.getInstance().schedule(hoodCloseCommand());
+
+    TalonFXConfiguration fireVelocityConfig = new TalonFXConfiguration();
+
+    fireVelocityConfig.Slot0.kS = 0.1; // pass in to cancel out back-emf of motor
+    fireVelocityConfig.Slot0.kV = 0.12; // volts per rpm
+    fireVelocityConfig.Slot0.kP = 0.11; // proportion
+    fireVelocityConfig.Slot0.kI = 0;
+    fireVelocityConfig.Slot0.kD = 0;
   }
 
   public Command shooterReverseCommand() {
