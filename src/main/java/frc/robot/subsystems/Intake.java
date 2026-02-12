@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import frc.robot.Helpers;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -23,6 +24,8 @@ public class Intake extends SubsystemBase {
     intakeConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     // TODO: Figure out if coast or break
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+    Helpers.applyConfig(intakeMotor, intakeConfig);
   }
 
   public Command intakeInCommand() {

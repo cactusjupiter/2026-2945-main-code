@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import frc.robot.Helpers;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -33,6 +34,8 @@ public class Climber extends SubsystemBase {
 
     climberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+    Helpers.applyConfig(climb1Motor, climberConfig);
+    Helpers.applyConfig(climb2Motor, climberConfig);
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
@@ -40,6 +43,9 @@ public class Climber extends SubsystemBase {
     pivotConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    Helpers.applyConfig(pivot1Motor, pivotConfig);
+    Helpers.applyConfig(pivot2Motor, pivotConfig);
   }
 
   public Command climbUpCommand() {
@@ -61,28 +67,6 @@ public class Climber extends SubsystemBase {
         }).finallyDo(
         () -> {
             stopClimber();
-        });
-  }
-
-  public Command pivotUpCommand() {
-    // reverse the motor to remove balls
-    return run(
-        () -> {
-            setPivotPower(CLIMB_SPEED);
-        }).finallyDo(
-        () -> {
-            stopPivot();
-        });
-  }
-
-  public Command pivotDownCommand() {
-    // reverse the motor to remove balls
-    return run(
-        () -> {
-            setPivotPower(-CLIMB_SPEED);
-        }).finallyDo(
-        () -> {
-            stopPivot();
         });
   }
 

@@ -8,8 +8,12 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -46,11 +50,22 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstantsPlatform.createDrivetrain();
 
+    /* Path follower */
+    private final SendableChooser<Command> autoChooser;
+
     public RobotContainer() {
+
+        autoChooser = AutoBuilder.buildAutoChooser("auto test");
+        SmartDashboard.putData("Auto Mode", autoChooser);
+
         configureBindings();
+
         // Switch to pipeline 0
         LimelightHelpers.setPipelineIndex("snake", 0);
         LimelightHelpers.setLEDMode_ForceBlink("snake");
+
+        // Warmup PathPlanner to avoid Java pauses
+        FollowPathCommand.warmupCommand().schedule();
     }
 
     private void configureBindings() {
@@ -99,12 +114,12 @@ public class RobotContainer {
             climbSubsystem.climbDownCommand(); // can we just do this? idk // i dont think we can since thats not how commands work i think ? // REVIEW
         }
 
-        manipulatorController.leftStick().multiPress(2, 2).onTrue(climbSubsystem.pivotUpCommand()); // TODO: implement proper logic for pivot up vs pivot down command
+        manipulatorController.leftStick().multiPress(2, 2).onTrue(climbSubsystem.pivotCommand()); // TODO: implement proper logic for pivot up vs pivot down command
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    public Command getAutonomousCommand() {
+    /*public Command getAutonomousCommand() {
         // Simple drive forward auton
         final var idle = new SwerveRequest.Idle();
         return Commands.sequence(
@@ -121,5 +136,10 @@ public class RobotContainer {
             // Finally idle for the rest of auton
             drivetrain.applyRequest(() -> idle)
         );
+    }*/
+
+    public Command getAutonomousCommand() {
+        /* Run the path selected from the auto chooser */
+        return autoChooser.getSelected();
     }
 }
