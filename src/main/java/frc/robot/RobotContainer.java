@@ -8,19 +8,25 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstantsPlatform;
+import frc.robot.subsystems.Agitator;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
@@ -47,6 +53,7 @@ public class RobotContainer {
     private final Intake intakeSubsystem = new Intake();
     private final Climber climbSubsystem = new Climber();
     private final Shooter shooterSubsystem = new Shooter();
+    private final Agitator agitatorSubsystem = new Agitator();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstantsPlatform.createDrivetrain();
 
@@ -55,8 +62,21 @@ public class RobotContainer {
 
     public RobotContainer() {
 
+        // HEADER: Register named commands for auto
+
+        NamedCommands.registerCommand("runShooter", new ParallelCommandGroup(
+            agitatorSubsystem.agitatorCWCommand().withTimeout(3.141592653589793),
+            shooterSubsystem.shooterShootCommand().withTimeout(3.14159265358979)
+        ));
+        
+        NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(2));
+
+        NamedCommands.registerCommand("doClimb", climbSubsystem.climbAutoCommand());
+        ))
+
         autoChooser = AutoBuilder.buildAutoChooser("auto test");
         SmartDashboard.putData("Auto Mode", autoChooser);
+
 
         configureBindings();
 
@@ -104,6 +124,9 @@ public class RobotContainer {
 
         manipulatorController.leftTrigger().whileTrue(intakeSubsystem.intakeInCommand());
         manipulatorController.leftBumper().whileTrue(intakeSubsystem.intakeOutCommand());
+
+        manipulatorController.povLeft().whileTrue(agitatorSubsystem.agitatorCCWCommand());
+        manipulatorController.povRight().whileTrue(agitatorSubsystem.agitatorCWCommand());
 
         manipulatorController.rightTrigger().whileTrue(shooterSubsystem.shooterShootCommand()); // TODO: replace this once shooter is fleshed out
         manipulatorController.rightBumper().whileTrue(shooterSubsystem.shooterReverseCommand());

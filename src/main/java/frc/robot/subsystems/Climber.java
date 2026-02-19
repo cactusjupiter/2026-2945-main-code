@@ -10,6 +10,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
@@ -20,11 +22,9 @@ public class Climber extends SubsystemBase {
     private TalonFX pivot1Motor = new TalonFX(Constants.PIVOT_1_ID);
     private TalonFX pivot2Motor = new TalonFX(Constants.PIVOT_2_ID);
     private static final double CLIMB_SPEED = 0.8;
-    private static final double PIVOT_SPEED = 0.8;
-    private static final boolean isPivotFwd = false;
 
-    private DigitalInput pivotFwdSwitch = new DigitalInput(Constants.PIVOT_LIMIT_FWD);
-    private DigitalInput pivotBckSwitch = new DigitalInput(Constants.PIVOT_LIMIT_BCK);
+    private DigitalInput climbTopLimit = new DigitalInput(Constants.CLIMB_LIMIT_TOP);
+    private DigitalInput climbBtmLimit = new DigitalInput(Constants.CLIMB_LIMIT_BTM);
 
   public Climber() {
     TalonFXConfiguration climberConfig = new TalonFXConfiguration();
@@ -37,7 +37,7 @@ public class Climber extends SubsystemBase {
     Helpers.applyConfig(climb1Motor, climberConfig);
     Helpers.applyConfig(climb2Motor, climberConfig);
 
-    TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
+    /*TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
     // TODO: figure out if this is counterclock of clock
     pivotConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -45,7 +45,7 @@ public class Climber extends SubsystemBase {
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     Helpers.applyConfig(pivot1Motor, pivotConfig);
-    Helpers.applyConfig(pivot2Motor, pivotConfig);
+    Helpers.applyConfig(pivot2Motor, pivotConfig);*/
   }
 
   public Command climbUpCommand() {
@@ -70,6 +70,23 @@ public class Climber extends SubsystemBase {
         });
   }
 
+  public Command climbAutoCommand() {
+    return new SequentialCommandGroup(
+      climbUpCommand().until(this::climberAtTop),
+      climbDownCommand().withTimeout(1.000000000001)
+    );
+    
+    /*run(
+        () -> {
+            setClimberPower(CLIMB_SPEED);
+        }).until(
+          climbTopLimit::get
+        ).finallyDo(
+        () -> {
+            stopClimber();
+        });*/
+  }
+
   private void setClimberPower(double power) {
     climb1Motor.set(power);
     climb2Motor.set(power);
@@ -79,45 +96,11 @@ public class Climber extends SubsystemBase {
     setClimberPower(0.0);
   } 
 
-  public Command pivotCommand() {
-    // close because is currently open
-    if (isPivotFwd) {
-      return pivotBckCommand();
-    } else { //open because is currently closed
-      return pivotFwdCommand();
-    }
+  private boolean climberAtTop() {
+    return !climbTopLimit.get();
   }
 
-  private Command pivotFwdCommand() {
-    return run(
-      () -> {
-          setPivotPower(PIVOT_SPEED);
-      }).until(
-          pivotFwdSwitch::get
-      ).finallyDo(
-      () -> {
-          stopPivot();
-      });
+  private boolean climberAtBottom() {
+    return !climbBtmLimit.get();
   }
-
-  private Command pivotBckCommand() {
-    return run(
-      () -> {
-          setPivotPower(-PIVOT_SPEED);
-      }).until(
-        pivotBckSwitch::get
-      ).finallyDo(
-      () -> {
-          stopPivot();
-      });
-  }
-
-  private void setPivotPower(double power) {
-    pivot1Motor.set(power);
-    pivot2Motor.set(power);
-  }
-
-  private void stopPivot() {
-    setPivotPower(0.0);
-  } 
 }

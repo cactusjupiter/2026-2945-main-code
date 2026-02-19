@@ -3,6 +3,7 @@ package frc.robot;
 public class Constants {
     // TODO: Set IDS correctly
     public static final int INTAKE_MOTOR_ID = 17;
+    public static final int AGITATOR_MOTOR_ID = 8;
     public static final int SHOOT_MOTOR_ID = 13; // SHOOTY MOTOR ID
     public static final int HOOD_MOTOR_ID = 21; // in da hood MOTOR ID
     public static final int HOOD_LIMIT_OPEN = 0;
