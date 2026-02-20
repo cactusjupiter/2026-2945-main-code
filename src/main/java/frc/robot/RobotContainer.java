@@ -72,7 +72,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(2));
 
         NamedCommands.registerCommand("doClimb", climbSubsystem.climbAutoCommand());
-        ))
+        
 
         autoChooser = AutoBuilder.buildAutoChooser("auto test");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -137,7 +137,7 @@ public class RobotContainer {
             climbSubsystem.climbDownCommand(); // can we just do this? idk // i dont think we can since thats not how commands work i think ? // REVIEW
         }
 
-        manipulatorController.leftStick().multiPress(2, 2).onTrue(climbSubsystem.pivotCommand()); // TODO: implement proper logic for pivot up vs pivot down command
+        //manipulatorController.leftStick().multiPress(2, 2).onTrue(climbSubsystem.pivotCommand()); // NEVERMIND: the pivot dont exist no more
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
