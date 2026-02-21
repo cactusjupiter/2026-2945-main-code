@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "startLeShootA"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "runShooter"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shootLeStartP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "startLeIntakeOutpostIShootA"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "startLeShootA"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "runShooter"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

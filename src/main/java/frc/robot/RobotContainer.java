@@ -71,6 +71,8 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(2));
 
+        NamedCommands.registerCommand("runIntakeZoned", intakeSubsystem.intakeInCommand());
+
         NamedCommands.registerCommand("doClimb", climbSubsystem.climbAutoCommand());
         
 
