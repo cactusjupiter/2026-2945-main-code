@@ -10,143 +10,117 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+// import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+// import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
 
-    // Variable definition
+    // desired loaderMotor power (%) and shootMotor velocity (rev/second)
+    private static final double LOADER_POWER = 0.8;
+    private static final double SHOOTER_SPEED = 10.0;
+
+    // initialize motors
+    private TalonFX loaderMotor = new TalonFX(Constants.LOADER_MOTOR_ID);
     private TalonFX shootMotor = new TalonFX(Constants.SHOOT_MOTOR_ID);
-    private TalonFX hoodMotor = new TalonFX(Constants.HOOD_MOTOR_ID);
-    private static final VelocityVoltage fireVelocityController = new VelocityVoltage(0).withSlot(0); // velocity based control
+    
+    // initialize velocity based controller
+    private static final VelocityVoltage shooterVelocityController = new VelocityVoltage(0).withSlot(0); 
 
-    private DigitalInput hoodOpenSwitch = new DigitalInput(Constants.HOOD_LIMIT_OPEN);
-    private DigitalInput hoodClosedSwitch = new DigitalInput(Constants.HOOD_LIMIT_CLOSED);
+    // stop the shooter with neutral control
     private NeutralOut shooterBreak = new NeutralOut();
-    private boolean isHoodOpen = false;
-
-    private static final double HOOD_SPEED = 0.8;
-    private static final double FIRE_SPEED = 50;
 
   public Shooter() {
 
-    TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
+    // configure the loaderMotor
+    TalonFXConfiguration loaderMotorConfig = new TalonFXConfiguration();
 
-    // TODO: figure out if this is counterclock of clock
-    // open is positive
-    hoodConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    // convention: positive power pulls from agitator
+    loaderMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    // brake when in neutral
+    loaderMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    //initialize hood to closed
-    CommandScheduler.getInstance().schedule(hoodCloseCommand());
+    // apply loaderMotor config
+    Helpers.applyConfig(loaderMotor, loaderMotorConfig);
 
-    Helpers.applyConfig(hoodMotor, hoodConfig);
 
-    // shooter
-    TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
+    // configure the shooterMotor
+    TalonFXConfiguration shooterMotorConfig = new TalonFXConfiguration();
 
-    // TODO: figure out if this is counterclock of clock
-    shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    // TODO: Figure out if coast or break
-    shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    // convention: positive power ejects from shooter
+    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    shooterConfig.Slot0.kS = 0.1; // pass in to cancel out back-emf of motor
-    shooterConfig.Slot0.kV = 0.12; // volts per rpm
-    shooterConfig.Slot0.kP = 0.11; // proportion
-    shooterConfig.Slot0.kI = 0;
-    shooterConfig.Slot0.kD = 0;
+    // brake when in neutral
+    shooterMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    Helpers.applyConfig(shootMotor, shooterConfig);
+    // configure velocity control paramters
+    // no I and D terms
+    shooterMotorConfig.Slot0.kS = 0.1;  // pass in to cancel out back-emf of motor
+    shooterMotorConfig.Slot0.kV = 0.12; // volts per rpm
+    shooterMotorConfig.Slot0.kP = 0.11; // proportion
+    shooterMotorConfig.Slot0.kI = 0;
+    shooterMotorConfig.Slot0.kD = 0;
+
+    // apply shooterMotor config
+    Helpers.applyConfig(shootMotor, shooterMotorConfig);
   }
 
-  public Command shooterReverseCommand() {
-    // intake into the robot
-    return run(
-        () -> {
-            setShooterPower(FIRE_SPEED);
-        }).finallyDo(
-        () -> {
-            stopShooter();
-        });
-  }
-
+  // shoot to eject
   public Command shooterShootCommand() {
-    // reverse the motor to remove balls
     return run(
         () -> {
-            setShooterPower(-FIRE_SPEED);
+          // run the loader at desired power
+          setLoaderPower(LOADER_POWER);
+          // run the shooter at desired velocity 
+          setShooterSpeed(SHOOTER_SPEED);
         }).finallyDo(
         () -> {
-            stopShooter();
+          // stop both motors
+          stopLoader();
+          stopShooter();
         });
   }
 
-  public Command hoodCommand() {
-    // close because is currently open
-    if (isHoodOpen) {
-      return hoodCloseCommand();
-    } else { //open because is currently closed
-      return hoodOpenCommand();
-    }
-  }
-
-  private Command hoodCloseCommand() {
+  // reverse to un-jam shooter
+  public Command shooterReverseCommand() {
     return run(
-      () -> {
-          setHoodPower(-HOOD_SPEED);
-      }).until(
-        this::getHoodClosedSwitch
-      ).finallyDo(
-      () -> {
-          stopHood();
-      });
+        () -> {
+          // run the loader at desired power
+          setLoaderPower(-LOADER_POWER);
+          // run the shooter at desired velocity 
+          setShooterSpeed(-SHOOTER_SPEED);
+        }).finallyDo(
+        () -> {
+          stopLoader();
+          stopShooter();
+        });
   }
 
-  private Command hoodOpenCommand() {
-    return run(
-      () -> {
-          setHoodPower(HOOD_SPEED);
-      }).until(
-        this::getHoodOpenSwitch
-      ).finallyDo(
-      () -> {
-          stopHood();
-      });
-  }
-
-  private boolean getHoodOpenSwitch() {
-        return !hoodOpenSwitch.get();
-  }
-
-  private boolean getHoodClosedSwitch() {
-        return !hoodClosedSwitch.get();
-  }
-
-  private void setShooterPower(double velocity) {
-    shootMotor.setControl(fireVelocityController.withVelocity(velocity));        
+  private void setShooterSpeed(double velocity) {
+    shootMotor.setControl(shooterVelocityController.withVelocity(velocity));        
   }
 
   private void stopShooter() {
     shootMotor.setControl(shooterBreak);
   } 
 
-  private void setHoodPower(double power) {
-    hoodMotor.set(power);
+  private void setLoaderPower(double power) {
+    loaderMotor.set(power);
   }
 
-  private void stopHood() {
-    setHoodPower(0.0);
+  private void stopLoader() {
+    setLoaderPower(0.0);
   } 
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("(FUNCLE) HOOD_LIMIT_CLOSED", getHoodClosedSwitch());
-  
-    SmartDashboard.putBoolean("(REEEEEEEEEEE) HOOD_LIMIT_OPEN", getHoodOpenSwitch());
+    SmartDashboard.putNumber("SHOOT_MOTOR_POWER", shootMotor.get());
+    // TODO: is this required?
+    shootMotor.getVelocity().refresh();
+    SmartDashboard.putNumber("SHOOT_MOTOR_VEL", shootMotor.getVelocity().getValue().magnitude());
   }
 }
