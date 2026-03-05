@@ -17,14 +17,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Climber extends SubsystemBase {
 
     // Variable definition
-    private TalonFX climb1Motor = new TalonFX(Constants.CLIMB_1_ID);
-    private TalonFX climb2Motor = new TalonFX(Constants.CLIMB_2_ID);
+    private TalonFX climb1Motor = new TalonFX(Constants.CLIMB_RIGHT_ID);
+    private TalonFX climb2Motor = new TalonFX(Constants.CLIMB_LEFT_ID);
     private TalonFX pivot1Motor = new TalonFX(Constants.PIVOT_1_ID);
     private TalonFX pivot2Motor = new TalonFX(Constants.PIVOT_2_ID);
     private static final double CLIMB_SPEED = 0.8;
 
-    private DigitalInput climbTopLimit = new DigitalInput(Constants.CLIMB_LIMIT_TOP);
-    private DigitalInput climbBtmLimit = new DigitalInput(Constants.CLIMB_LIMIT_BTM);
+    private DigitalInput climbTopLimit = new DigitalInput(Constants.CLIMB_LIMIT_LEFT);
+    private DigitalInput climbBtmLimit = new DigitalInput(Constants.CLIMB_LIMIT_RIGHT);
 
   public Climber() {
     TalonFXConfiguration climberConfig = new TalonFXConfiguration();
@@ -39,7 +39,8 @@ public class Climber extends SubsystemBase {
 
     /*TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
-    // TODO: figure out if this is counterclock of clock
+    // TODO: figure out if this is 
+    ounterclock of clock
     pivotConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -73,7 +74,7 @@ public class Climber extends SubsystemBase {
   public Command climbAutoCommand() {
     return new SequentialCommandGroup(
       climbUpCommand().until(this::climberAtTop),
-      climbDownCommand().withTimeout(1.000000000001)
+      climbDownCommand().withTimeout(1.0)
     );
     
     /*run(

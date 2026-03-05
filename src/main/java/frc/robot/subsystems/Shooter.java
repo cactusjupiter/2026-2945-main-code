@@ -20,7 +20,7 @@ public class Shooter extends SubsystemBase {
 
     // desired loaderMotor power (%) and shootMotor velocity (rev/second)
     private static final double LOADER_POWER = 0.8;
-    private static final double SHOOTER_SPEED = 10.0;
+    private static final double SHOOTER_SPEED = 60.0;
 
     // initialize motors
     private TalonFX loaderMotor = new TalonFX(Constants.LOADER_MOTOR_ID);
@@ -51,10 +51,11 @@ public class Shooter extends SubsystemBase {
     TalonFXConfiguration shooterMotorConfig = new TalonFXConfiguration();
 
     // convention: positive power ejects from shooter
-    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     // brake when in neutral
-    shooterMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    shooterMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast
+    ;
 
     // configure velocity control paramters
     // no I and D terms
@@ -72,14 +73,11 @@ public class Shooter extends SubsystemBase {
   public Command shooterShootCommand() {
     return run(
         () -> {
-          // run the loader at desired power
-          setLoaderPower(LOADER_POWER);
           // run the shooter at desired velocity 
           setShooterSpeed(SHOOTER_SPEED);
         }).finallyDo(
         () -> {
-          // stop both motors
-          stopLoader();
+          // stop shooot motors
           stopShooter();
         });
   }
@@ -88,14 +86,36 @@ public class Shooter extends SubsystemBase {
   public Command shooterReverseCommand() {
     return run(
         () -> {
-          // run the loader at desired power
-          setLoaderPower(-LOADER_POWER);
           // run the shooter at desired velocity 
           setShooterSpeed(-SHOOTER_SPEED);
         }).finallyDo(
         () -> {
-          stopLoader();
           stopShooter();
+        });
+  }
+
+  // shoot to eject
+  public Command loaderShootCommand() {
+    return run(
+        () -> {
+          // run the loader at desired power
+          setLoaderPower(LOADER_POWER);
+        }).finallyDo(
+        () -> {
+          // stop both motors
+          stopLoader();
+        });
+  }
+
+  // reverse to un-jam shooter
+  public Command loaderReverseCommand() {
+    return run(
+        () -> {
+          // run the loader at desired power
+          setLoaderPower(-LOADER_POWER);
+        }).finallyDo(
+        () -> {
+          stopLoader();
         });
   }
 

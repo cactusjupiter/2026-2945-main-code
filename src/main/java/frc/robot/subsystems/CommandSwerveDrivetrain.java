@@ -16,6 +16,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -23,12 +24,14 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
+import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import frc.robot.generated.TunerConstantsPlatform.TunerSwerveDrivetrain;
 
 /**
@@ -331,6 +334,24 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Matrix<N3, N1> visionMeasurementStdDevs
     ) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+    }
+
+    public void megaTagUpdate(){
+        boolean rejectUpdate = false;
+        LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_NAME, getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LIMELIGHT_NAME);
+        if(getPigeon2().getAngularVelocityZWorld().getValueAsDouble() > 720){
+            rejectUpdate = true;
+        }
+        if(mt2.tagCount == 0){
+            rejectUpdate = true;
+        }
+        if(!rejectUpdate){
+            setStateStdDevs(VecBuilder.fill(.7,.7,9999999));
+            addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+        }
+        SmartDashboard.putBoolean("Pose?", !rejectUpdate);
+        SmartDashboard.putNumber("Numbar Tags", mt2.tagCount);
     }
 
     /**

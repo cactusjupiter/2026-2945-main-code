@@ -76,16 +76,20 @@ public class RobotContainer {
         NamedCommands.registerCommand("doClimb", climbSubsystem.climbAutoCommand());
         
 
-        autoChooser = AutoBuilder.buildAutoChooser("auto test");
+        autoChooser = AutoBuilder.buildAutoChooser("NOOP");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 
         configureBindings();
 
         // Switch to pipeline 0
-        LimelightHelpers.setPipelineIndex("snake", 0);
-        LimelightHelpers.setLEDMode_ForceBlink("snake");
+        LimelightHelpers.setPipelineIndex(Constants.LIMELIGHT_NAME, 0);
+        LimelightHelpers.setLEDMode_ForceBlink(Constants.LIMELIGHT_NAME);
 
+        //valid ids for limelight to detect
+        int[] validIDs = {15};
+        LimelightHelpers.SetFiducialIDFiltersOverride(Constants.LIMELIGHT_NAME, validIDs);
+        
         // Warmup PathPlanner to avoid Java pauses
         FollowPathCommand.warmupCommand().schedule();
     }
@@ -130,8 +134,11 @@ public class RobotContainer {
         manipulatorController.povLeft().whileTrue(agitatorSubsystem.agitatorCCWCommand());
         manipulatorController.povRight().whileTrue(agitatorSubsystem.agitatorCWCommand());
 
-        manipulatorController.rightTrigger().whileTrue(shooterSubsystem.shooterShootCommand()); // TODO: replace this once shooter is fleshed out
-        manipulatorController.rightBumper().whileTrue(shooterSubsystem.shooterReverseCommand());
+        manipulatorController.a().whileTrue(shooterSubsystem.shooterShootCommand());
+        //manipulatorController.rightBumper().whileTrue(shooterSubsystem.shooterReverseCommand());
+
+        manipulatorController.rightTrigger().whileTrue(shooterSubsystem.loaderShootCommand());
+        manipulatorController.rightBumper().whileTrue(shooterSubsystem.loaderReverseCommand());
 
         if(manipulatorController.getLeftY() > 0.5){
             climbSubsystem.climbUpCommand(); // TODO: replace this once climber is fleshed out
@@ -166,5 +173,9 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();
+    }
+
+    public void swerveMegaTagUpdate() {
+        drivetrain.megaTagUpdate(); // performs the megatag update in drivetrain
     }
 }
