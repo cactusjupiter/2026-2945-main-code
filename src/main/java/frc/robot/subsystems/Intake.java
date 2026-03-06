@@ -21,7 +21,7 @@ public class Intake extends SubsystemBase {
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
 
     // TODO: figure out if this is counterclock of clock
-    intakeConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     // TODO: Figure out if coast or break
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 

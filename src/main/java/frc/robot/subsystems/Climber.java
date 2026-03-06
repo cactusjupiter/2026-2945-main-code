@@ -10,21 +10,22 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
 
     // Variable definition
-    private TalonFX climb1Motor = new TalonFX(Constants.CLIMB_RIGHT_ID);
-    private TalonFX climb2Motor = new TalonFX(Constants.CLIMB_LEFT_ID);
-    private TalonFX pivot1Motor = new TalonFX(Constants.PIVOT_1_ID);
-    private TalonFX pivot2Motor = new TalonFX(Constants.PIVOT_2_ID);
+    private TalonFX climbRightMotor = new TalonFX(Constants.CLIMB_RIGHT_ID);
+    private TalonFX climbLeftMotor = new TalonFX(Constants.CLIMB_LEFT_ID);
+    //private TalonFX pivot1Motor = new TalonFX(Constants.PIVOT_1_ID);
+    //private TalonFX pivot2Motor = new TalonFX(Constants.PIVOT_2_ID);
     private static final double CLIMB_SPEED = 0.8;
+    private static final double CLIMB_DOWN_TIME = 3.0; // NOT downtime
 
-    private DigitalInput climbTopLimit = new DigitalInput(Constants.CLIMB_LIMIT_LEFT);
-    private DigitalInput climbBtmLimit = new DigitalInput(Constants.CLIMB_LIMIT_RIGHT);
+    private DigitalInput climbLftLimit = new DigitalInput(Constants.CLIMB_LIMIT_LEFT);
+    private DigitalInput climbRgtLimit = new DigitalInput(Constants.CLIMB_LIMIT_RIGHT);
 
   public Climber() {
     TalonFXConfiguration climberConfig = new TalonFXConfiguration();
@@ -34,8 +35,8 @@ public class Climber extends SubsystemBase {
 
     climberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    Helpers.applyConfig(climb1Motor, climberConfig);
-    Helpers.applyConfig(climb2Motor, climberConfig);
+    Helpers.applyConfig(climbRightMotor, climberConfig);
+    Helpers.applyConfig(climbLeftMotor, climberConfig);
 
     /*TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
@@ -49,32 +50,68 @@ public class Climber extends SubsystemBase {
     Helpers.applyConfig(pivot2Motor, pivotConfig);*/
   }
 
-  public Command climbUpCommand() {
+  public ParallelCommandGroup climbBothUpCommand() {
+    return new ParallelCommandGroup(
+      climbLeftUpCommand().until(this::climberLeftAtTop),
+      climbRightUpCommand().until(this::climberRightAtTop)
+    );
+  }
+
+  public ParallelCommandGroup climbBothDownCommand() {
+    return new ParallelCommandGroup(
+      climbLeftDownCommand().withTimeout(CLIMB_DOWN_TIME),
+      climbRightDownCommand().withTimeout(CLIMB_DOWN_TIME)
+    );
+  }
+
+  public Command climbRightUpCommand() {
     // intake into the robot
     return run(
         () -> {
-            setClimberPower(CLIMB_SPEED);
+            setRightClimberPower(CLIMB_SPEED);
         }).finallyDo(
         () -> {
-            stopClimber();
+            stopRightClimber();
         });
   }
 
-  public Command climbDownCommand() {
+  public Command climbLeftUpCommand() {
     // reverse the motor to remove balls
     return run(
         () -> {
-            setClimberPower(-CLIMB_SPEED);
+            setLeftClimberPower(CLIMB_SPEED);
         }).finallyDo(
         () -> {
-            stopClimber();
+            stopLeftClimber();
+        });
+  }
+
+  public Command climbRightDownCommand() {
+    // intake into the robot
+    return run(
+        () -> {
+            setRightClimberPower(-CLIMB_SPEED);
+        }).finallyDo(
+        () -> {
+            stopRightClimber();
+        });
+  }
+
+  public Command climbLeftDownCommand() {
+    // reverse the motor to remove balls
+    return run(
+        () -> {
+            setLeftClimberPower(-CLIMB_SPEED);
+        }).finallyDo(
+        () -> {
+            stopLeftClimber();
         });
   }
 
   public Command climbAutoCommand() {
     return new SequentialCommandGroup(
-      climbUpCommand().until(this::climberAtTop),
-      climbDownCommand().withTimeout(1.0)
+      climbBothUpCommand(),
+      climbBothDownCommand()
     );
     
     /*run(
@@ -88,20 +125,27 @@ public class Climber extends SubsystemBase {
         });*/
   }
 
-  private void setClimberPower(double power) {
-    climb1Motor.set(power);
-    climb2Motor.set(power);
+  private void setLeftClimberPower(double power) {
+    climbLeftMotor.set(power);
   }
 
-  private void stopClimber() {
-    setClimberPower(0.0);
+  private void setRightClimberPower(double power) {
+    climbRightMotor.set(power);
+  }
+
+  private void stopLeftClimber() {
+    setLeftClimberPower(0.0);
   } 
 
-  private boolean climberAtTop() {
-    return !climbTopLimit.get();
+  private void stopRightClimber() {
+    setRightClimberPower(0.0);
+  } 
+
+  private boolean climberLeftAtTop() {
+    return !climbLftLimit.get();
   }
 
-  private boolean climberAtBottom() {
-    return !climbBtmLimit.get();
+  private boolean climberRightAtTop() {
+    return !climbRgtLimit.get();
   }
 }

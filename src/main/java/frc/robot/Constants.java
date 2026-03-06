@@ -3,7 +3,7 @@ package frc.robot;
 public class Constants {
     // TODO: Set IDS correctly
     public static final int INTAKE_MOTOR_ID = 12;
-    public static final int AGITATOR_MOTOR_ID = 1;
+    public static final int AGITATOR_MOTOR_ID = 56;
     public static final int SHOOT_MOTOR_ID = 15; // SHOOTY MOTOR ID
     public static final int LOADER_MOTOR_ID = 21; // in da load MOTOR ID
     public static final int HOOD_LIMIT_OPEN = 0;
@@ -19,6 +19,10 @@ public class Constants {
     public static final int[] CAMERA_TAGS = {9,10, 25,26};
     public static final int CAMERA_MODE = 2;
     public static final String LIMELIGHT_NAME = "snake";
+
+    // CONTROLLER AXES
+    public static final int CONTROLLER_LY_AXIS = 1;
+    public static final int CONTROLLER_RY_AXIS = 5;
 
     // TURN
     // - FRONT_RIGHT_TURN: 16

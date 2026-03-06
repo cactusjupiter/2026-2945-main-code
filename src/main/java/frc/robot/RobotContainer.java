@@ -70,7 +70,6 @@ public class RobotContainer {
         ));
         
         NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(2));
-
         NamedCommands.registerCommand("runIntakeZoned", intakeSubsystem.intakeInCommand());
 
         NamedCommands.registerCommand("doClimb", climbSubsystem.climbAutoCommand());
@@ -140,11 +139,11 @@ public class RobotContainer {
         manipulatorController.rightTrigger().whileTrue(shooterSubsystem.loaderShootCommand());
         manipulatorController.rightBumper().whileTrue(shooterSubsystem.loaderReverseCommand());
 
-        if(manipulatorController.getLeftY() > 0.5){
-            climbSubsystem.climbUpCommand(); // TODO: replace this once climber is fleshed out
-        }else if(manipulatorController.getLeftY() < -0.5){
-            climbSubsystem.climbDownCommand(); // can we just do this? idk // i dont think we can since thats not how commands work i think ? // REVIEW
-        }
+        manipulatorController.axisGreaterThan(Constants.CONTROLLER_LY_AXIS, 0.5).whileTrue(climbSubsystem.climbLeftUpCommand());
+        manipulatorController.axisGreaterThan(Constants.CONTROLLER_RY_AXIS, 0.5).whileTrue(climbSubsystem.climbRightUpCommand());
+        
+        manipulatorController.axisLessThan(Constants.CONTROLLER_LY_AXIS, -0.5).whileTrue(climbSubsystem.climbLeftDownCommand());
+        manipulatorController.axisLessThan(Constants.CONTROLLER_RY_AXIS, -0.5).whileTrue(climbSubsystem.climbRightDownCommand());
 
         //manipulatorController.leftStick().multiPress(2, 2).onTrue(climbSubsystem.pivotCommand()); // NEVERMIND: the pivot dont exist no more
 
