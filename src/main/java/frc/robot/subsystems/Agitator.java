@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Agitator extends SubsystemBase {
@@ -38,6 +39,13 @@ public class Agitator extends SubsystemBase {
         () -> {
             stopAgitator();
         });
+  }
+
+  public Command agitatorDefaultCommand() {
+    return new SequentialCommandGroup(
+      agitatorCCWCommand().withTimeout(3.0),
+      agitatorCWCommand().withTimeout(2.0)
+    );
   }
 
   private void setAgitatorPower(double power) {

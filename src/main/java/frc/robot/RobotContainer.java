@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -63,6 +64,10 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+
+        // set default commands
+
+        agitatorSubsystem.setDefaultCommand(agitatorSubsystem.agitatorDefaultCommand());
 
         // HEADER: Register named commands for auto
 
