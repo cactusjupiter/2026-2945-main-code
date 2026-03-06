@@ -31,6 +31,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Loader;
 
 // import frc.robot.LimelightHelpers;
 
@@ -53,6 +54,7 @@ public class RobotContainer {
     private final Intake intakeSubsystem = new Intake();
     private final Climber climbSubsystem = new Climber();
     private final Shooter shooterSubsystem = new Shooter();
+    private final Loader loaderSubsystem = new Loader();
     private final Agitator agitatorSubsystem = new Agitator();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -136,8 +138,8 @@ public class RobotContainer {
         manipulatorController.a().whileTrue(shooterSubsystem.shooterShootCommand());
         //manipulatorController.rightBumper().whileTrue(shooterSubsystem.shooterReverseCommand());
 
-        manipulatorController.rightTrigger().whileTrue(shooterSubsystem.loaderShootCommand());
-        manipulatorController.rightBumper().whileTrue(shooterSubsystem.loaderReverseCommand());
+        manipulatorController.rightTrigger().whileTrue(loaderSubsystem.loaderShootCommand());
+        manipulatorController.rightBumper().whileTrue(loaderSubsystem.loaderReverseCommand());
 
         manipulatorController.axisGreaterThan(Constants.CONTROLLER_LY_AXIS, 0.5).whileTrue(climbSubsystem.climbBothDownCommand());
         
