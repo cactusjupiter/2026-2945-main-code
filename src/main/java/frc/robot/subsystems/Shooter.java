@@ -19,11 +19,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shooter extends SubsystemBase {
 
     // desired loaderMotor power (%) and shootMotor velocity (rev/second)
-    private static final double LOADER_POWER = 1; //muahahahahahahaha fast
     private static final double SHOOTER_SPEED = 30.0;
 
     // initialize motors
-    private TalonFX loaderMotor = new TalonFX(Constants.LOADER_MOTOR_ID);
     private TalonFX shootMotor = new TalonFX(Constants.SHOOT_MOTOR_ID);
     
     // initialize velocity based controller
@@ -33,20 +31,6 @@ public class Shooter extends SubsystemBase {
     private NeutralOut shooterBreak = new NeutralOut();
 
   public Shooter() {
-
-    // configure the loaderMotor
-    TalonFXConfiguration loaderMotorConfig = new TalonFXConfiguration();
-
-    // convention: positive power pulls from agitator
-    loaderMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-
-    // brake when in neutral
-    loaderMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-    // apply loaderMotor config
-    Helpers.applyConfig(loaderMotor, loaderMotorConfig);
-
-
     // configure the shooterMotor
     TalonFXConfiguration shooterMotorConfig = new TalonFXConfiguration();
 
@@ -94,45 +78,12 @@ public class Shooter extends SubsystemBase {
         });
   }
 
-  // shoot to eject
-  public Command loaderShootCommand() {
-    return run(
-        () -> {
-          // run the loader at desired power
-          setLoaderPower(LOADER_POWER);
-        }).finallyDo(
-        () -> {
-          // stop both motors
-          stopLoader();
-        });
-  }
-
-  // reverse to un-jam shooter
-  public Command loaderReverseCommand() {
-    return run(
-        () -> {
-          // run the loader at desired power
-          setLoaderPower(-LOADER_POWER);
-        }).finallyDo(
-        () -> {
-          stopLoader();
-        });
-  }
-
   private void setShooterSpeed(double velocity) {
     shootMotor.setControl(shooterVelocityController.withVelocity(velocity));        
   }
 
   private void stopShooter() {
     shootMotor.setControl(shooterBreak);
-  } 
-
-  private void setLoaderPower(double power) {
-    loaderMotor.set(power);
-  }
-
-  private void stopLoader() {
-    setLoaderPower(0.0);
   } 
   
   @Override
