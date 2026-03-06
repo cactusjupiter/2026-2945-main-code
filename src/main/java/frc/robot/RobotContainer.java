@@ -139,11 +139,9 @@ public class RobotContainer {
         manipulatorController.rightTrigger().whileTrue(shooterSubsystem.loaderShootCommand());
         manipulatorController.rightBumper().whileTrue(shooterSubsystem.loaderReverseCommand());
 
-        manipulatorController.axisGreaterThan(Constants.CONTROLLER_LY_AXIS, 0.5).whileTrue(climbSubsystem.climbLeftUpCommand());
-        manipulatorController.axisGreaterThan(Constants.CONTROLLER_RY_AXIS, 0.5).whileTrue(climbSubsystem.climbRightUpCommand());
+        manipulatorController.axisGreaterThan(Constants.CONTROLLER_LY_AXIS, 0.5).whileTrue(climbSubsystem.climbBothUpCommand());
         
-        manipulatorController.axisLessThan(Constants.CONTROLLER_LY_AXIS, -0.5).whileTrue(climbSubsystem.climbLeftDownCommand());
-        manipulatorController.axisLessThan(Constants.CONTROLLER_RY_AXIS, -0.5).whileTrue(climbSubsystem.climbRightDownCommand());
+        manipulatorController.axisLessThan(Constants.CONTROLLER_LY_AXIS, -0.5).whileTrue(climbSubsystem.climbBothDownCommand());
 
         //manipulatorController.leftStick().multiPress(2, 2).onTrue(climbSubsystem.pivotCommand()); // NEVERMIND: the pivot dont exist no more
 

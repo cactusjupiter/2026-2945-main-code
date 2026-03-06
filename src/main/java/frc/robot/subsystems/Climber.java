@@ -21,22 +21,29 @@ public class Climber extends SubsystemBase {
     private TalonFX climbLeftMotor = new TalonFX(Constants.CLIMB_LEFT_ID);
     //private TalonFX pivot1Motor = new TalonFX(Constants.PIVOT_1_ID);
     //private TalonFX pivot2Motor = new TalonFX(Constants.PIVOT_2_ID);
-    private static final double CLIMB_SPEED = 0.8;
+    private static final double CLIMB_SPEED = 0.05;
     private static final double CLIMB_DOWN_TIME = 3.0; // NOT downtime
 
     private DigitalInput climbLftLimit = new DigitalInput(Constants.CLIMB_LIMIT_LEFT);
     private DigitalInput climbRgtLimit = new DigitalInput(Constants.CLIMB_LIMIT_RIGHT);
 
   public Climber() {
-    TalonFXConfiguration climberConfig = new TalonFXConfiguration();
+    TalonFXConfiguration climberConfigRight = new TalonFXConfiguration();
 
     // TODO: figure out if this is counterclock of clock
-    climberConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    climberConfigRight.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    climberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    climberConfigRight.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    Helpers.applyConfig(climbRightMotor, climberConfig);
-    Helpers.applyConfig(climbLeftMotor, climberConfig);
+    TalonFXConfiguration climberConfigLeft = new TalonFXConfiguration();
+
+    // TODO: figure out if this is counterclock of clock
+    climberConfigLeft.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    climberConfigLeft.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    Helpers.applyConfig(climbRightMotor, climberConfigRight);
+    Helpers.applyConfig(climbLeftMotor, climberConfigLeft);
 
     /*TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
@@ -50,60 +57,26 @@ public class Climber extends SubsystemBase {
     Helpers.applyConfig(pivot2Motor, pivotConfig);*/
   }
 
-  public ParallelCommandGroup climbBothUpCommand() {
-    return new ParallelCommandGroup(
-      climbLeftUpCommand().until(this::climberLeftAtTop),
-      climbRightUpCommand().until(this::climberRightAtTop)
-    );
-  }
-
-  public ParallelCommandGroup climbBothDownCommand() {
-    return new ParallelCommandGroup(
-      climbLeftDownCommand().withTimeout(CLIMB_DOWN_TIME),
-      climbRightDownCommand().withTimeout(CLIMB_DOWN_TIME)
-    );
-  }
-
-  public Command climbRightUpCommand() {
-    // intake into the robot
+  public Command climbBothUpCommand() {
     return run(
-        () -> {
-            setRightClimberPower(CLIMB_SPEED);
-        }).finallyDo(
+      () -> {
+        setRightClimberPower(CLIMB_SPEED);
+        setLeftClimberPower(CLIMB_SPEED);
+      }).finallyDo(
         () -> {
             stopRightClimber();
-        });
-  }
-
-  public Command climbLeftUpCommand() {
-    // reverse the motor to remove balls
-    return run(
-        () -> {
-            setLeftClimberPower(CLIMB_SPEED);
-        }).finallyDo(
-        () -> {
             stopLeftClimber();
         });
   }
 
-  public Command climbRightDownCommand() {
-    // intake into the robot
+  public Command climbBothDownCommand() {
     return run(
-        () -> {
-            setRightClimberPower(-CLIMB_SPEED);
-        }).finallyDo(
+      () -> {
+        setRightClimberPower(-CLIMB_SPEED);
+        setLeftClimberPower(-CLIMB_SPEED);
+      }).finallyDo(
         () -> {
             stopRightClimber();
-        });
-  }
-
-  public Command climbLeftDownCommand() {
-    // reverse the motor to remove balls
-    return run(
-        () -> {
-            setLeftClimberPower(-CLIMB_SPEED);
-        }).finallyDo(
-        () -> {
             stopLeftClimber();
         });
   }
@@ -111,7 +84,7 @@ public class Climber extends SubsystemBase {
   public Command climbAutoCommand() {
     return new SequentialCommandGroup(
       climbBothUpCommand(),
-      climbBothDownCommand()
+      climbBothDownCommand().withTimeout(CLIMB_DOWN_TIME)
     );
     
     /*run(
@@ -126,11 +99,19 @@ public class Climber extends SubsystemBase {
   }
 
   private void setLeftClimberPower(double power) {
-    climbLeftMotor.set(power);
+    if (climberLeftAtTop()) {
+      stopLeftClimber();
+    } else {
+      climbLeftMotor.set(power);
+    }
   }
 
   private void setRightClimberPower(double power) {
-    climbRightMotor.set(power);
+    if (climberRightAtTop()) {
+      stopRightClimber();
+    } else {
+      climbRightMotor.set(power);
+    }
   }
 
   private void stopLeftClimber() {
