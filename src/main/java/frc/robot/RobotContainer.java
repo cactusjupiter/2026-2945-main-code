@@ -67,8 +67,9 @@ public class RobotContainer {
         // HEADER: Register named commands for auto
 
         NamedCommands.registerCommand("runShooter", new ParallelCommandGroup(
-            agitatorSubsystem.agitatorCWCommand().withTimeout(3.141592653589793),
-            shooterSubsystem.shooterShootCommand().withTimeout(3.14159265358979)
+            agitatorSubsystem.agitatorCWCommand().withTimeout(10),
+            loaderSubsystem.loaderShootCommand().withTimeout(10),
+            shooterSubsystem.shooterShootCommand().withTimeout(10)
         ));
         
         NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(2));
@@ -80,7 +81,7 @@ public class RobotContainer {
         ));
         
 
-        autoChooser = AutoBuilder.buildAutoChooser("NOOP");
+        autoChooser = AutoBuilder.buildAutoChooser("NO_MOVE_SHOOT");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 
