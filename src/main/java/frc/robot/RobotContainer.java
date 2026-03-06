@@ -135,7 +135,7 @@ public class RobotContainer {
         manipulatorController.povLeft().whileTrue(agitatorSubsystem.agitatorCCWCommand());
         manipulatorController.povRight().whileTrue(agitatorSubsystem.agitatorCWCommand());
 
-        manipulatorController.a().whileTrue(shooterSubsystem.shooterShootCommand());
+        manipulatorController.a().toggleOnTrue(shooterSubsystem.shooterShootCommand());
         //manipulatorController.rightBumper().whileTrue(shooterSubsystem.shooterReverseCommand());
 
         manipulatorController.rightTrigger().whileTrue(loaderSubsystem.loaderShootCommand());
