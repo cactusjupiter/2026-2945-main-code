@@ -72,7 +72,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(2));
         NamedCommands.registerCommand("runIntakeZoned", intakeSubsystem.intakeInCommand());
 
-        NamedCommands.registerCommand("doClimb", climbSubsystem.climbAutoCommand());
+        NamedCommands.registerCommand("doClimb", new SequentialCommandGroup(
+            intakeSubsystem.intakeOutCommand().withTimeout(1.0),
+            climbSubsystem.climbAutoCommand()
+        ));
         
 
         autoChooser = AutoBuilder.buildAutoChooser("NOOP");
