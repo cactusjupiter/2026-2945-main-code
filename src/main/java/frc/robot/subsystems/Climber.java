@@ -21,7 +21,7 @@ public class Climber extends SubsystemBase {
     private TalonFX climbLeftMotor = new TalonFX(Constants.CLIMB_LEFT_ID);
     //private TalonFX pivot1Motor = new TalonFX(Constants.PIVOT_1_ID);
     //private TalonFX pivot2Motor = new TalonFX(Constants.PIVOT_2_ID);
-    private static final double CLIMB_SPEED = 0.05;
+    private static final double CLIMB_SPEED = 0.1;
     private static final double CLIMB_DOWN_TIME = 3.0; // NOT downtime
 
     private DigitalInput climbLftLimit = new DigitalInput(Constants.CLIMB_LIMIT_LEFT);
@@ -31,14 +31,14 @@ public class Climber extends SubsystemBase {
     TalonFXConfiguration climberConfigRight = new TalonFXConfiguration();
 
     // TODO: figure out if this is counterclock of clock
-    climberConfigRight.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    climberConfigRight.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     climberConfigRight.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     TalonFXConfiguration climberConfigLeft = new TalonFXConfiguration();
 
     // TODO: figure out if this is counterclock of clock
-    climberConfigLeft.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    climberConfigLeft.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     climberConfigLeft.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
@@ -99,16 +99,16 @@ public class Climber extends SubsystemBase {
   }
 
   private void setLeftClimberPower(double power) {
-    if (climberLeftAtTop()) {
-      stopLeftClimber();
+    if (climberLeftAtTop() && power > 0.0) {
+      climbLeftMotor.set(0.0);
     } else {
       climbLeftMotor.set(power);
     }
   }
 
   private void setRightClimberPower(double power) {
-    if (climberRightAtTop()) {
-      stopRightClimber();
+    if (climberRightAtTop() && power > 0.0) {
+      climbRightMotor.set(0.0);
     } else {
       climbRightMotor.set(power);
     }
