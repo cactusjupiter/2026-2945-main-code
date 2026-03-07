@@ -135,8 +135,11 @@ public class RobotContainer {
         driverController.start().and(driverController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // Reset the field-centric heading on left bumper press.
-        driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        // Reset the field-centric heading on y press.
+        driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+        driverController.rightTrigger().onTrue(shooterSubsystem.shooterSpeedUpCommand());
+        driverController.leftTrigger().onTrue(shooterSubsystem.shooterSpeedDownCommand());
 
         manipulatorController.leftTrigger().whileTrue(intakeSubsystem.intakeInCommand());
         manipulatorController.leftBumper().whileTrue(intakeSubsystem.intakeOutCommand());

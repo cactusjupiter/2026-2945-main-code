@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shooter extends SubsystemBase {
 
     // desired loaderMotor power (%) and shootMotor velocity (rev/second)
-    private static final double SHOOTER_SPEED = 35.0;
+    private static double SHOOTER_SPEED = 35.0;
 
     // initialize motors
     private TalonFX shootMotor = new TalonFX(Constants.SHOOT_MOTOR_ID);
@@ -65,6 +65,20 @@ public class Shooter extends SubsystemBase {
         });
   }
 
+  public Command shooterSpeedUpCommand() {
+    return runOnce(
+      () -> {
+        SHOOTER_SPEED += 5.0;
+      });
+  }
+
+  public Command shooterSpeedDownCommand() {
+    return runOnce(
+      () -> {
+        SHOOTER_SPEED -= 2.5;
+      });
+  }
+
   // reverse to un-jam shooter
   public Command shooterReverseCommand() {
     return run(
@@ -89,6 +103,8 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("SHOOT_MOTOR_POWER", shootMotor.get());
+    
+    SmartDashboard.putNumber("SHOOT_MOTOR_DESIRED_SPEED", SHOOTER_SPEED);
     // TODO: is this required?
     shootMotor.getVelocity().refresh();
     SmartDashboard.putNumber("SHOOT_MOTOR_VEL", shootMotor.getVelocity().getValue().magnitude());
