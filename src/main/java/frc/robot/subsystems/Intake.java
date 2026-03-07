@@ -20,10 +20,8 @@ public class Intake extends SubsystemBase {
   public Intake() {
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
 
-    // TODO: figure out if this is counterclock of clock
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    // TODO: Figure out if coast or break
-    intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     Helpers.applyConfig(intakeMotor, intakeConfig);
   }
@@ -56,25 +54,5 @@ public class Intake extends SubsystemBase {
 
   private void stopIntake() {
     setIntakePower(0.0);
-  } 
-
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
   }
 }

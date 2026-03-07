@@ -7,19 +7,16 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
-import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -52,6 +49,7 @@ public class RobotContainer {
     private final CommandXboxController driverController = new CommandXboxController(0);
     private final CommandXboxController manipulatorController = new CommandXboxController(1);
 
+    // initialize subsystems
     private final Intake intakeSubsystem = new Intake();
     private final Climber climbSubsystem = new Climber();
     private final Shooter shooterSubsystem = new Shooter();
@@ -64,11 +62,6 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-
-        // set default commands
-
-        agitatorSubsystem.setDefaultCommand(agitatorSubsystem.agitatorDefaultCommand());
-
         // HEADER: Register named commands for auto
 
         NamedCommands.registerCommand("runShooter", new ParallelCommandGroup(
@@ -96,7 +89,7 @@ public class RobotContainer {
         LimelightHelpers.setPipelineIndex(Constants.LIMELIGHT_NAME, 0);
         LimelightHelpers.setLEDMode_ForceBlink(Constants.LIMELIGHT_NAME);
 
-        //valid ids for limelight to detect
+        // valid ids for limelight to detect
         int[] validIDs = {15};
         LimelightHelpers.SetFiducialIDFiltersOverride(Constants.LIMELIGHT_NAME, validIDs);
         
@@ -105,6 +98,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        // set default commands
+
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
@@ -115,6 +110,8 @@ public class RobotContainer {
                     .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
+
+        agitatorSubsystem.setDefaultCommand(agitatorSubsystem.agitatorDefaultCommand());
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -138,45 +135,27 @@ public class RobotContainer {
         // Reset the field-centric heading on y press.
         driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
+        // Intake is left trigger and bumper
         manipulatorController.leftTrigger().whileTrue(intakeSubsystem.intakeInCommand());
         manipulatorController.leftBumper().whileTrue(intakeSubsystem.intakeOutCommand());
 
+        // Agitator override
         manipulatorController.povLeft().whileTrue(agitatorSubsystem.agitatorCCWCommand());
         manipulatorController.povRight().whileTrue(agitatorSubsystem.agitatorCWCommand());
 
+        // a button shoots
         manipulatorController.a().toggleOnTrue(shooterSubsystem.shooterShootCommand());
-        //manipulatorController.rightBumper().whileTrue(shooterSubsystem.shooterReverseCommand());
 
+        // Loader is right trigger and bumper
         manipulatorController.rightTrigger().whileTrue(loaderSubsystem.loaderShootCommand());
         manipulatorController.rightBumper().whileTrue(loaderSubsystem.loaderReverseCommand());
 
-        manipulatorController.axisGreaterThan(Constants.CONTROLLER_LY_AXIS, 0.5).whileTrue(climbSubsystem.climbBothDownCommand());
-        
-        manipulatorController.axisLessThan(Constants.CONTROLLER_LY_AXIS, -0.5).whileTrue(climbSubsystem.climbBothUpCommand());
-
-        //manipulatorController.leftStick().multiPress(2, 2).onTrue(climbSubsystem.pivotCommand()); // NEVERMIND: the pivot dont exist no more
+        // Left stick axes are for climbing
+        manipulatorController.axisGreaterThan(Constants.CONTROLLER_LY_AXIS, Constants.AXIS_THRESHOLD).whileTrue(climbSubsystem.climbBothDownCommand());
+        manipulatorController.axisLessThan(Constants.CONTROLLER_LY_AXIS, -Constants.AXIS_THRESHOLD).whileTrue(climbSubsystem.climbBothUpCommand());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
-
-    /*public Command getAutonomousCommand() {
-        // Simple drive forward auton
-        final var idle = new SwerveRequest.Idle();
-        return Commands.sequence(
-            // Reset our field centric heading to match the robot
-            // facing away from our alliance station wall (0 deg).
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-            // Then slowly drive forward (away from us) for 5 seconds.
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(0.5)
-                    .withVelocityY(0)
-                    .withRotationalRate(0.0)
-            )
-            .withTimeout(5.0),
-            // Finally idle for the rest of auton
-            drivetrain.applyRequest(() -> idle)
-        );
-    }*/
 
     public Command getAutonomousCommand() {
         /* Run the path selected from the auto chooser */
