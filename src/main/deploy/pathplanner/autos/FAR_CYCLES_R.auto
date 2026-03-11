@@ -7,19 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "startLeClimbP"
+            "pathName": "startRiCenterIStartLe"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "climbHubToMi"
+            "pathName": "startLeShootA"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "doClimb"
+            "name": "runShooter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shootLeStartP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "startLeCenterIStartRi"
           }
         }
       ]
