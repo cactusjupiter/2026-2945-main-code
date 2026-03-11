@@ -7,13 +7,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 
-// import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Loader extends SubsystemBase {
@@ -39,7 +34,7 @@ public class Loader extends SubsystemBase {
     Helpers.applyConfig(loaderMotor, loaderMotorConfig);
   }
 
-  // shoot to eject
+  // load to be shot
   public Command loaderShootCommand() {
     return run(
         () -> {
@@ -52,7 +47,7 @@ public class Loader extends SubsystemBase {
         });
   }
 
-  // reverse to un-jam shooter
+  // reverse to un-jam loader
   public Command loaderReverseCommand() {
     return run(
         () -> {

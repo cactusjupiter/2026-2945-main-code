@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
-import frc.robot.Helpers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -20,7 +19,7 @@ public class Agitator extends SubsystemBase {
   }
 
   public Command agitatorCWCommand() {
-    // agitator into the robot
+    // run agitator clockwise
     return run(
         () -> {
             setAgitatorPower(AGITATOR_SPEED);
@@ -31,7 +30,7 @@ public class Agitator extends SubsystemBase {
   }
 
   public Command agitatorCCWCommand() {
-    // reverse the motor to remove balls
+    // run agitator clockfoolish
     return run(
         () -> {
             setAgitatorPower(-AGITATOR_SPEED);
@@ -42,6 +41,7 @@ public class Agitator extends SubsystemBase {
   }
 
   public Command agitatorDefaultCommand() {
+    //run clockfoolish 3 seconds, then 2 clockwise
     return new SequentialCommandGroup(
       agitatorCCWCommand().withTimeout(3.0),
       agitatorCWCommand().withTimeout(2.0)
@@ -54,25 +54,5 @@ public class Agitator extends SubsystemBase {
 
   private void stopAgitator() {
     setAgitatorPower(0.0);
-  } 
-
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
   }
 }

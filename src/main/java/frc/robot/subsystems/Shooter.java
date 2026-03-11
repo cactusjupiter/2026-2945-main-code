@@ -10,10 +10,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
-// import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
@@ -53,6 +51,7 @@ public class Shooter extends SubsystemBase {
   }
 
   // shoot to eject
+  // if need be, copy and add a negative in front of SHOOTER_SPEED to reverse shooter
   public Command shooterShootCommand() {
     return run(
         () -> {
@@ -103,8 +102,10 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("SHOOT_MOTOR_POWER", shootMotor.get());
-    // TODO: is this required?
+    
+    // this is required
     shootMotor.getVelocity().refresh();
+
     SmartDashboard.putNumber("SHOOT_MOTOR_VEL", shootMotor.getVelocity().getValue().magnitude());
   }
 }
