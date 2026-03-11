@@ -18,14 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Agitator;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -51,7 +49,6 @@ public class RobotContainer {
 
     // initialize subsystems
     private final Intake intakeSubsystem = new Intake();
-    private final Climber climbSubsystem = new Climber();
     private final Shooter shooterSubsystem = new Shooter();
     private final Loader loaderSubsystem = new Loader();
     private final Agitator agitatorSubsystem = new Agitator();
@@ -73,10 +70,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(2));
         NamedCommands.registerCommand("runIntakeZoned", intakeSubsystem.intakeInCommand());
 
-        NamedCommands.registerCommand("doClimb", new SequentialCommandGroup(
-            intakeSubsystem.intakeOutCommand().withTimeout(1.0),
+        /*NamedCommands.registerCommand("doClimb", new SequentialCommandGroup(
+          intakeSubsystem.intakeOutCommand().withTimeout(1.0),
             climbSubsystem.climbAutoCommand()
-        ));
+        ));*/
         
 
         autoChooser = AutoBuilder.buildAutoChooser("NO_MOVE_SHOOT");
@@ -152,9 +149,10 @@ public class RobotContainer {
         manipulatorController.rightTrigger().whileTrue(loaderSubsystem.loaderShootCommand());
         manipulatorController.rightBumper().whileTrue(loaderSubsystem.loaderReverseCommand());
 
+        // NO MORR CLIMBAR
         // Left stick axes are for climbing
-        manipulatorController.axisGreaterThan(Constants.CONTROLLER_LY_AXIS, Constants.AXIS_THRESHOLD).whileTrue(climbSubsystem.climbBothDownCommand());
-        manipulatorController.axisLessThan(Constants.CONTROLLER_LY_AXIS, -Constants.AXIS_THRESHOLD).whileTrue(climbSubsystem.climbBothUpCommand());
+        //manipulatorController.axisGreaterThan(Constants.CONTROLLER_LY_AXIS, Constants.AXIS_THRESHOLD).whileTrue(climbSubsystem.climbBothDownCommand());
+        //manipulatorController.axisLessThan(Constants.CONTROLLER_LY_AXIS, -Constants.AXIS_THRESHOLD).whileTrue(climbSubsystem.climbBothUpCommand());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
