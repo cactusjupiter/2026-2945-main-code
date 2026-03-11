@@ -6,10 +6,6 @@ public class Constants {
     public static final int AGITATOR_MOTOR_ID = 56;
     public static final int SHOOT_MOTOR_ID = 15; // SHOOTY MOTOR ID
     public static final int LOADER_MOTOR_ID = 21; // in da load MOTOR ID
-    public static final int CLIMB_RIGHT_ID = 8;
-    public static final int CLIMB_LEFT_ID = 10;
-    public static final int CLIMB_LIMIT_RIGHT = 0;
-    public static final int CLIMB_LIMIT_LEFT = 1;
     public static final int[] CAMERA_TAGS = {9,10, 25,26};
     public static final int CAMERA_MODE = 2;
     public static final String LIMELIGHT_NAME = "snake";
