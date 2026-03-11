@@ -137,7 +137,10 @@ public class RobotContainer {
 
         // Reset the field-centric heading on y press.
         driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
+        //shooter speed control
+        manipulatorController.povUp().onTrue(shooterSubsystem.shooterSpeedUpCommand());
+        manipulatorController.povDown().onTrue(shooterSubsystem.shooterSpeedDownCommand());
+        //INTAKE
         manipulatorController.leftTrigger().whileTrue(intakeSubsystem.intakeInCommand());
         manipulatorController.leftBumper().whileTrue(intakeSubsystem.intakeOutCommand());
 

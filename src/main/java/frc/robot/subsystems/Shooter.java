@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shooter extends SubsystemBase {
 
     // desired loaderMotor power (%) and shootMotor velocity (rev/second)
-    private static final double SHOOTER_SPEED = 63.0;
+    private static double SHOOTER_SPEED = 47.5;//for 9 feet from front of robot to front of hub
 
     // initialize motors
     private TalonFX shootMotor = new TalonFX(Constants.SHOOT_MOTOR_ID);
@@ -75,6 +75,20 @@ public class Shooter extends SubsystemBase {
         () -> {
           stopShooter();
         });
+  }
+
+  public Command shooterSpeedUpCommand() {
+    return runOnce(
+      () -> {
+        SHOOTER_SPEED += 5.0;
+      });
+  }
+
+  public Command shooterSpeedDownCommand() {
+    return runOnce(
+      () -> {
+        SHOOTER_SPEED -= 2.5;
+      });
   }
 
   private void setShooterSpeed(double velocity) {

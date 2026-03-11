@@ -19,14 +19,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Loader extends SubsystemBase {
 
     // desired loaderMotor power (%) and shootMotor velocity (rev/second)
-    private static final double LOADER_POWER = 1; //muahahahahahahaha fast
+    private static final double LOADER_POWER = 0.6; //muahahahahahahaha slightly slower
 
     // initialize motors
     private TalonFX loaderMotor = new TalonFX(Constants.LOADER_MOTOR_ID);
     
   public Loader() {
 
-    // configure the loaderMotor
+    // configure theD loaderMotor
     TalonFXConfiguration loaderMotorConfig = new TalonFXConfiguration();
 
     // convention: positive power pulls from agitator
