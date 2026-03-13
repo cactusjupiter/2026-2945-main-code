@@ -85,6 +85,7 @@ public class RobotContainer {
         // Switch to pipeline 0
         LimelightHelpers.setPipelineIndex(Constants.LIMELIGHT_NAME, 0);
         LimelightHelpers.setLEDMode_ForceBlink(Constants.LIMELIGHT_NAME);
+        LimelightHelpers.setStreamMode_PiPSecondary("snake");
 
         // valid ids for limelight to detect
         int[] validIDs = {15};

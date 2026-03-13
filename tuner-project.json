@@ -1,22 +1,22 @@
 {
   "Version": "1.0.0.0",
-  "LastState": 11,
+  "LastState": 12,
   "Modules": [
     {
       "ModuleName": "Front Left",
       "ModuleId": 0,
       "Encoder": {
-        "Id": 3,
-        "Name": "FLC",
+        "Id": 22,
+        "Name": "FRONT_LEFT_CANCODER",
         "Model": "CANCoder",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": null
       },
       "SteerMotor": {
-        "Id": 7,
-        "Name": "FLT",
-        "Model": "Talon FX",
+        "Id": 24,
+        "Name": "FRONT_LEFT_TURN",
+        "Model": "Talon FX vers. C",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": {
@@ -27,9 +27,9 @@
         }
       },
       "DriveMotor": {
-        "Id": 3,
-        "Name": "FLD",
-        "Model": "Talon FX",
+        "Id": 39,
+        "Name": "FRONT_LEFT_DRIVE",
+        "Model": "Talon FX vers. C",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": {
@@ -42,30 +42,30 @@
       "IsEncoderInverted": false,
       "IsSteerInverted": true,
       "SelectedEncoderType": "CANcoder",
-      "EncoderOffset": -0.156982421875,
+      "EncoderOffset": -0.168701171875,
       "DriveMotorSelectionState": 1,
       "SteerMotorSelectionState": 1,
       "SteerEncoderSelectionState": 1,
       "IsModuleValidationComplete": true,
-      "ValidatedSteerId": 7,
-      "ValidatedDriveId": 3,
-      "ValidatedEncoderId": 3
+      "ValidatedSteerId": 24,
+      "ValidatedDriveId": 39,
+      "ValidatedEncoderId": 22
     },
     {
       "ModuleName": "Front Right",
       "ModuleId": 1,
       "Encoder": {
-        "Id": 2,
-        "Name": "FRC",
+        "Id": 17,
+        "Name": "FRONT_RIGHT_CANCODER",
         "Model": "CANCoder",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": null
       },
       "SteerMotor": {
-        "Id": 6,
-        "Name": "FRT",
-        "Model": "Talon FX",
+        "Id": 16,
+        "Name": "FRONT_RIGHT_TURN",
+        "Model": "Talon FX vers. C",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": {
@@ -76,9 +76,9 @@
         }
       },
       "DriveMotor": {
-        "Id": 2,
-        "Name": "FRD",
-        "Model": "Talon FX",
+        "Id": 25,
+        "Name": "FRONT_RIGHT_DRIVE",
+        "Model": "Talon FX vers. C",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": {
@@ -91,30 +91,30 @@
       "IsEncoderInverted": false,
       "IsSteerInverted": true,
       "SelectedEncoderType": "CANcoder",
-      "EncoderOffset": -0.195068359375,
+      "EncoderOffset": 0.1357421875,
       "DriveMotorSelectionState": 1,
       "SteerMotorSelectionState": 1,
       "SteerEncoderSelectionState": 1,
       "IsModuleValidationComplete": true,
-      "ValidatedSteerId": 6,
-      "ValidatedDriveId": 2,
-      "ValidatedEncoderId": 2
+      "ValidatedSteerId": 16,
+      "ValidatedDriveId": 25,
+      "ValidatedEncoderId": 17
     },
     {
       "ModuleName": "Back Left",
       "ModuleId": 2,
       "Encoder": {
-        "Id": 1,
-        "Name": "BLC",
+        "Id": 29,
+        "Name": "BACK_LEFT_CANCODER",
         "Model": "CANCoder",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": null
       },
       "SteerMotor": {
-        "Id": 5,
-        "Name": "BLT",
-        "Model": "Talon FX",
+        "Id": 18,
+        "Name": "BACK_LEFT_TURN",
+        "Model": "Talon FX vers. C",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": {
@@ -125,9 +125,9 @@
         }
       },
       "DriveMotor": {
-        "Id": 1,
-        "Name": "BLD",
-        "Model": "Talon FX",
+        "Id": 23,
+        "Name": "BACK_LEFT_DRIVE",
+        "Model": "Talon FX vers. C",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": {
@@ -140,30 +140,30 @@
       "IsEncoderInverted": false,
       "IsSteerInverted": true,
       "SelectedEncoderType": "CANcoder",
-      "EncoderOffset": 0.37646484375,
+      "EncoderOffset": -0.05859375,
       "DriveMotorSelectionState": 1,
       "SteerMotorSelectionState": 1,
       "SteerEncoderSelectionState": 1,
       "IsModuleValidationComplete": true,
-      "ValidatedSteerId": 5,
-      "ValidatedDriveId": 1,
-      "ValidatedEncoderId": 1
+      "ValidatedSteerId": 18,
+      "ValidatedDriveId": 23,
+      "ValidatedEncoderId": 29
     },
     {
       "ModuleName": "Back Right",
       "ModuleId": 3,
       "Encoder": {
-        "Id": 0,
-        "Name": "BRC",
+        "Id": 19,
+        "Name": "BACK_RIGHT_CANCODER",
         "Model": "CANCoder",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": null
       },
       "SteerMotor": {
-        "Id": 4,
-        "Name": "BRT",
-        "Model": "Talon FX",
+        "Id": 45,
+        "Name": "BACK_RIGHT_TURN",
+        "Model": "Talon FX vers. C",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": {
@@ -174,9 +174,9 @@
         }
       },
       "DriveMotor": {
-        "Id": 0,
-        "Name": "BRD",
-        "Model": "Talon FX",
+        "Id": 40,
+        "Name": "BACK_RIGHT_DRIVE",
+        "Model": "Talon FX vers. C",
         "CANbus": "rio",
         "CANbusFriendly": "",
         "SelectedMotorType": {
@@ -189,28 +189,28 @@
       "IsEncoderInverted": false,
       "IsSteerInverted": true,
       "SelectedEncoderType": "CANcoder",
-      "EncoderOffset": -0.479248046875,
+      "EncoderOffset": 0.05810546875,
       "DriveMotorSelectionState": 1,
       "SteerMotorSelectionState": 1,
       "SteerEncoderSelectionState": 1,
       "IsModuleValidationComplete": true,
-      "ValidatedSteerId": 4,
-      "ValidatedDriveId": 0,
-      "ValidatedEncoderId": 0
+      "ValidatedSteerId": 45,
+      "ValidatedDriveId": 40,
+      "ValidatedEncoderId": 19
     }
   ],
   "SwerveOptions": {
     "Gyro": {
-      "Id": 8,
-      "Name": "Pigeon 2",
-      "Model": "Pigeon 2 vers. S",
+      "Id": 20,
+      "Name": "PIGEON",
+      "Model": "Pigeon 2",
       "CANbus": "rio",
       "CANbusFriendly": "",
       "SelectedMotorType": null
     },
     "IsValidGyroCANbus": true,
-    "VerticalTrackSizeInches": 23.5,
-    "HorizontalTrackSizeInches": 24.0,
+    "VerticalTrackSizeInches": 16.25,
+    "HorizontalTrackSizeInches": 27.75,
     "WheelRadiusInches": 2.0,
     "IsLeftSideInverted": false,
     "IsRightSideInverted": true,
@@ -227,6 +227,6 @@
     "HasVerifiedDrive": true,
     "IsValidConfiguration": true
   },
-  "TeamNumber": 2945,
+  "TeamNumber": 0,
   "schema_version": "1"
 }
