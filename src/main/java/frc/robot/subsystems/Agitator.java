@@ -18,7 +18,7 @@ public class Agitator extends SubsystemBase {
   public Agitator() {
   }
 
-  public Command agitatorCWCommand() {
+  public Command agitatorCCWCommand() {
     // run agitator clockwise
     return run(
         () -> {
@@ -29,7 +29,7 @@ public class Agitator extends SubsystemBase {
         });
   }
 
-  public Command agitatorCCWCommand() {
+  public Command agitatorCWCommand() {
     // run agitator clockfoolish
     return run(
         () -> {
@@ -40,13 +40,13 @@ public class Agitator extends SubsystemBase {
         });
   }
 
-  public Command agitatorDefaultCommand() {
+  /*public Command agitatorDefaultCommand() {
     //run clockfoolish 3 seconds, then 2 clockwise
     return new SequentialCommandGroup(
       agitatorCCWCommand().withTimeout(3.0),
       agitatorCWCommand().withTimeout(2.0)
     );
-  }
+  }*/
 
   private void setAgitatorPower(double power) {
     agitatorMotor.set(ControlMode.PercentOutput, power);

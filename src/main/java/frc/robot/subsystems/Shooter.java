@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shooter extends SubsystemBase {
 
     // desired loaderMotor power (%) and shootMotor velocity (rev/second)
-    private static double SHOOTER_SPEED = 47.5;//for 9 feet from front of robot to front of hub
+    private static double SHOOTER_SPEED = 80;//for 9 feet from front of robot to front of hub
 
     // initialize motors
     private TalonFX shootMotor = new TalonFX(Constants.SHOOT_MOTOR_ID);
@@ -33,7 +33,7 @@ public class Shooter extends SubsystemBase {
     TalonFXConfiguration shooterMotorConfig = new TalonFXConfiguration();
 
     // convention: positive power ejects from shooter
-    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     // brake when in neutral
     shooterMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;

@@ -25,7 +25,7 @@ public class Loader extends SubsystemBase {
     TalonFXConfiguration loaderMotorConfig = new TalonFXConfiguration();
 
     // convention: positive power pulls from agitator
-    loaderMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    loaderMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     // brake when in neutral
     loaderMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;

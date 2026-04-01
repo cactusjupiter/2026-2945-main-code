@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -103,13 +104,13 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(Constants.XV_RATE_LIMITER.calculate(-driverController.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(Constants.YV_RATE_LIMITER.calculate(-driverController.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
-        agitatorSubsystem.setDefaultCommand(agitatorSubsystem.agitatorDefaultCommand());
+        // agitatorSubsystem.setDefaultCommand(agitatorSubsystem.agitatorCWCommand());
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -120,7 +121,8 @@ public class RobotContainer {
 
         driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driverController.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))
+            // point.with
+            drive.withVelocityX(1.0)
         ));
 
         // Run SysId routines when holding back/start and X/Y.

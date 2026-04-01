@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -285,6 +286,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+        SmartDashboard.putNumber("PigeonX", getPigeon2().getAccelerationX().getValueAsDouble());
+        SmartDashboard.putNumber("PigeonY", getPigeon2().getAccelerationY().getValueAsDouble());
+        SmartDashboard.putNumber("PigeonZ", getPigeon2().getAccelerationY().getValueAsDouble());
     }
 
     private void startSimThread() {

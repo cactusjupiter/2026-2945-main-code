@@ -15,7 +15,7 @@ public class Intake extends SubsystemBase {
 
     // Variable definition
     private TalonFX intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID);
-    private static final double INTAKE_SPEED = 0.5;
+    private static final double INTAKE_SPEED = 0.75;
 
   public Intake() {
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
