@@ -52,6 +52,18 @@ public class Intake extends SubsystemBase {
         });
   }
 
+  public Command intakeVariableCommand(double power){
+    // variable speed set elsewhere; + = in, - = out
+    return run(
+        () -> {
+            setIntakePower(power);
+        }).finallyDo(
+        () -> {
+            stopIntake();
+        }
+      );
+  }
+
   private void setIntakePower(double power) {
     intakeMotor.set(power);
   }

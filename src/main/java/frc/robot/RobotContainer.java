@@ -64,11 +64,21 @@ public class RobotContainer {
         // HEADER: Register named commands for auto
 
         NamedCommands.registerCommand("runShooter", new SequentialCommandGroup(
-            shooterSubsystem.shooterShootCommand().withTimeout(5),
+            shooterSubsystem.shooterShootCommand().withTimeout(2.5),
             new ParallelCommandGroup(
                 shooterSubsystem.shooterShootCommand().withTimeout(10),
                 loaderSubsystem.loaderShootCommand().withTimeout(10),
-                agitatorSubsystem.agitatorCWCommand().withTimeout(10)
+                agitatorSubsystem.agitatorJostleCommand(),
+                intakeSubsystem.intakeVariableCommand(0.1).withTimeout(10)
+            )
+        ));
+        NamedCommands.registerCommand("runShooterShort", new SequentialCommandGroup(
+            shooterSubsystem.shooterShootCommand().withTimeout(2.5),
+            new ParallelCommandGroup(
+                shooterSubsystem.shooterShootCommand().withTimeout(4),
+                loaderSubsystem.loaderShootCommand().withTimeout(4),
+                agitatorSubsystem.agitatorJostleCommand().withTimeout(4),
+                intakeSubsystem.intakeVariableCommand(0.1).withTimeout(4)
             )
         ));
         
@@ -146,7 +156,7 @@ public class RobotContainer {
         //INTAKE
         manipulatorController.leftTrigger().whileTrue(intakeSubsystem.intakeInCommand());
         manipulatorController.leftBumper().whileTrue(intakeSubsystem.intakeOutCommand());
-
+        
         // Agitator override
         manipulatorController.povLeft().whileTrue(agitatorSubsystem.agitatorCCWCommand());
         manipulatorController.povRight().whileTrue(agitatorSubsystem.agitatorCWCommand());

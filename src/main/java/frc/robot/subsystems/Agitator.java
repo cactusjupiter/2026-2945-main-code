@@ -40,13 +40,20 @@ public class Agitator extends SubsystemBase {
         });
   }
 
-  /*public Command agitatorDefaultCommand() {
-    //run clockfoolish 3 seconds, then 2 clockwise
+  public Command agitatorJostleCommand() {
+    // DURATION: 10 seconds
+    //run clockfoolish 1.5 seconds, then 1 clockwise, repeat
     return new SequentialCommandGroup(
-      agitatorCCWCommand().withTimeout(3.0),
-      agitatorCWCommand().withTimeout(2.0)
+      agitatorCCWCommand().withTimeout(1.5),
+      agitatorCWCommand().withTimeout(1.0),
+      agitatorCCWCommand().withTimeout(1.5),
+      agitatorCWCommand().withTimeout(1.0),
+      agitatorCCWCommand().withTimeout(1.5),
+      agitatorCWCommand().withTimeout(1.0),
+      agitatorCCWCommand().withTimeout(1.5),
+      agitatorCWCommand().withTimeout(1.0)
     );
-  }*/
+  }
 
   private void setAgitatorPower(double power) {
     agitatorMotor.set(ControlMode.PercentOutput, power);
