@@ -22,6 +22,10 @@ public class Intake extends SubsystemBase {
 
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    intakeConfig.CurrentLimits.StatorCurrentLimit = 20;
+    intakeConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    intakeConfig.CurrentLimits.SupplyCurrentLimit = 20;
+    intakeConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     Helpers.applyConfig(intakeMotor, intakeConfig);
   }

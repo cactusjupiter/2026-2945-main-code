@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
 
-    // desired loaderMotor power (%) and shootMotor velocity (rev/second)
-    private static double SHOOTER_SPEED = 80;//for 9 feet from front of robot to front of hub
+    // desired shootMotor velocity (rev/second)
+    private static double SHOOTER_SPEED = 25;//for 9 feet from front of robot to front of hub
 
     // initialize motors
     private TalonFX shootMotor = new TalonFX(Constants.SHOOT_MOTOR_ID);
@@ -37,6 +37,11 @@ public class Shooter extends SubsystemBase {
 
     // brake when in neutral
     shooterMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+    shooterMotorConfig.CurrentLimits.StatorCurrentLimit = 40;
+    shooterMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooterMotorConfig.CurrentLimits.SupplyCurrentLimit = 40;
+    shooterMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // configure velocity control paramters
     // no I and D terms

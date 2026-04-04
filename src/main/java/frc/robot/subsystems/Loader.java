@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Loader extends SubsystemBase {
 
     // desired loaderMotor power (%) and shootMotor velocity (rev/second)
-    private static final double LOADER_POWER = 0.6; //muahahahahahahaha slightly slower
+    private static final double LOADER_POWER = 0.4; //muahahahahahahaha slightly slower
 
     // initialize motors
     private TalonFX loaderMotor = new TalonFX(Constants.LOADER_MOTOR_ID);
@@ -25,7 +25,7 @@ public class Loader extends SubsystemBase {
     TalonFXConfiguration loaderMotorConfig = new TalonFXConfiguration();
 
     // convention: positive power pulls from agitator
-    loaderMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    loaderMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     // brake when in neutral
     loaderMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;

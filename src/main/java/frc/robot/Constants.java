@@ -21,8 +21,8 @@ public class Constants {
     public static final double AXIS_THRESHOLD = 0.5; 
 
     // limit rate of speed change
-    public static final SlewRateLimiter XV_RATE_LIMITER = new SlewRateLimiter(0.5);
-    public static final SlewRateLimiter YV_RATE_LIMITER = new SlewRateLimiter(0.5);
+    public static final SlewRateLimiter XV_RATE_LIMITER = new SlewRateLimiter(1);
+    public static final SlewRateLimiter YV_RATE_LIMITER = new SlewRateLimiter(1);
 
     // TURN
     // - FRONT_RIGHT_TURN: 16

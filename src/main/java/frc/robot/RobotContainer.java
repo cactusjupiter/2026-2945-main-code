@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -62,12 +63,17 @@ public class RobotContainer {
     public RobotContainer() {
         // HEADER: Register named commands for auto
 
-        NamedCommands.registerCommand("runShooter", new ParallelCommandGroup(
-            agitatorSubsystem.agitatorCWCommand().withTimeout(10),
-            loaderSubsystem.loaderShootCommand().withTimeout(10),
-            shooterSubsystem.shooterShootCommand().withTimeout(10)
+        NamedCommands.registerCommand("runShooter", new SequentialCommandGroup(
+            shooterSubsystem.shooterShootCommand().withTimeout(5),
+            new ParallelCommandGroup(
+                shooterSubsystem.shooterShootCommand().withTimeout(10),
+                loaderSubsystem.loaderShootCommand().withTimeout(10),
+                agitatorSubsystem.agitatorCWCommand().withTimeout(10)
+            )
         ));
         
+        NamedCommands.registerCommand("spinShooterZoned", shooterSubsystem.shooterShootCommand());
+
         NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(2));
         NamedCommands.registerCommand("runIntakeZoned", intakeSubsystem.intakeInCommand());
 
@@ -135,8 +141,8 @@ public class RobotContainer {
         // Reset the field-centric heading on y press.
         driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
         //shooter speed control
-        manipulatorController.povUp().onTrue(shooterSubsystem.shooterSpeedUpCommand());
-        manipulatorController.povDown().onTrue(shooterSubsystem.shooterSpeedDownCommand());
+        //manipulatorController.povUp().onTrue(shooterSubsystem.shooterSpeedUpCommand());
+        //manipulatorController.povDown().onTrue(shooterSubsystem.shooterSpeedDownCommand());
         //INTAKE
         manipulatorController.leftTrigger().whileTrue(intakeSubsystem.intakeInCommand());
         manipulatorController.leftBumper().whileTrue(intakeSubsystem.intakeOutCommand());
@@ -148,9 +154,27 @@ public class RobotContainer {
         // a button shoots
         manipulatorController.a().toggleOnTrue(shooterSubsystem.shooterShootCommand());
 
+        // b and x buttons run shooting sequence
+        manipulatorController.b().toggleOnTrue(new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                shooterSubsystem.shooterShootCommand(),
+                loaderSubsystem.loaderReverseCommand(),
+                intakeSubsystem.intakeInCommand()
+            )
+        ));
+
+        // x reverses loader to shoot
+        manipulatorController.x().toggleOnTrue(new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                shooterSubsystem.shooterShootCommand(),
+                loaderSubsystem.loaderShootCommand(),
+                intakeSubsystem.intakeInCommand()
+            )
+        ));
+
         // Loader is right trigger and bumper
-        manipulatorController.rightTrigger().whileTrue(loaderSubsystem.loaderShootCommand());
-        manipulatorController.rightBumper().whileTrue(loaderSubsystem.loaderReverseCommand());
+        manipulatorController.rightTrigger().whileTrue(loaderSubsystem.loaderReverseCommand());
+        manipulatorController.rightBumper().whileTrue(loaderSubsystem.loaderShootCommand());
 
         // NO MORR CLIMBAR
         // Left stick axes are for climbing
