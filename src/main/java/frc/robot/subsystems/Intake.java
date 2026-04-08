@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
@@ -62,6 +63,20 @@ public class Intake extends SubsystemBase {
             stopIntake();
         }
       );
+  }
+
+  private void test() {
+    setIntakePower(INTAKE_SPEED);
+  }
+
+  public Command intakeAutoStartCommand() {
+    // intake into the robot
+    return new InstantCommand(() -> test());
+  }
+
+  public Command intakeAutoStopCommand() {
+    // intake into the robot
+    return new InstantCommand(() -> stopIntake());
   }
 
   private void setIntakePower(double power) {

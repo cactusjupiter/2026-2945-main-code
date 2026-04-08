@@ -84,8 +84,11 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("spinShooterZoned", shooterSubsystem.shooterShootCommand());
 
-        NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(2));
-        NamedCommands.registerCommand("runIntakeZoned", intakeSubsystem.intakeInCommand());
+        NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(5));
+        NamedCommands.registerCommand("runIntakeZoned", new ParallelCommandGroup(intakeSubsystem.intakeInCommand(), loaderSubsystem.loaderReverseCommand()));
+
+        NamedCommands.registerCommand("runIntakeStart", intakeSubsystem.intakeAutoStartCommand());
+        NamedCommands.registerCommand("runIntakeStop", intakeSubsystem.intakeAutoStopCommand());
 
         /*NamedCommands.registerCommand("doClimb", new SequentialCommandGroup(
           intakeSubsystem.intakeOutCommand().withTimeout(1.0),

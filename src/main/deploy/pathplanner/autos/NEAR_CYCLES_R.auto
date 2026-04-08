@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "startRiShootA"
+            "pathName": "startRiShortShootA"
           }
         },
         {
@@ -25,13 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shootRiStartP"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "startRiCenterIStartRi"
+            "pathName": "shortShootRiStartP"
           }
         }
       ]
