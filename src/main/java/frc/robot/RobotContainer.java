@@ -186,8 +186,8 @@ public class RobotContainer {
         ));
 
         // Loader is right trigger and bumper
-        manipulatorController.rightTrigger().whileTrue(loaderSubsystem.loaderReverseCommand());
-        manipulatorController.rightBumper().whileTrue(loaderSubsystem.loaderShootCommand());
+        manipulatorController.rightBumper().whileTrue(loaderSubsystem.loaderReverseCommand());
+        manipulatorController.rightTrigger().whileTrue(loaderSubsystem.loaderShootCommand());
 
         // NO MORR CLIMBAR
         // Left stick axes are for climbing
