@@ -67,6 +67,12 @@ public class RobotContainer {
             shooterSubsystem.shooterShootCommand().withTimeout(10)
         ));
         
+        NamedCommands.registerCommand("runShooterParty", new ParallelCommandGroup(
+            agitatorSubsystem.agitatorCWCommand().withTimeout(5),
+            loaderSubsystem.loaderShootCommand().withTimeout(5),
+            shooterSubsystem.shooterShootCommand().withTimeout(5)
+        ));
+
         NamedCommands.registerCommand("runIntake", intakeSubsystem.intakeInCommand().withTimeout(2));
         NamedCommands.registerCommand("runIntakeZoned", intakeSubsystem.intakeInCommand());
 
